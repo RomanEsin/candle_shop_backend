@@ -11,6 +11,11 @@ services:
       - POSTGRES_DB=your_database
     volumes:
       - ./pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U your_username -d your_database" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   web:
     build:
@@ -18,4 +23,5 @@ services:
     ports:
       - "2247:8000"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
