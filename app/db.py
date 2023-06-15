@@ -9,7 +9,6 @@ from sqlalchemy import Integer, Column, Boolean, String, ForeignKey, select, Flo
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase, relationship, selectinload, lazyload, subqueryload
 
-import app.schemas
 from app.config import DATABASE_URL
 
 
@@ -92,7 +91,7 @@ class DB:
         result = await self.session.execute(query)
         return result.scalar_one_or_none()
 
-    async def create_product(self, product: app.schemas.ProductCreate):
+    async def create_product(self, product):
         product = Product(**product.dict())
         self.session.add(product)
         await self.session.commit()
