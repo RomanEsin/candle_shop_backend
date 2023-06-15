@@ -1,4 +1,5 @@
 from fastapi import Depends, FastAPI
+from starlette.middleware.cors import CORSMiddleware
 
 from db import User, create_db_and_tables
 from schemas import UserCreate, UserRead, UserUpdate
@@ -7,6 +8,19 @@ import shop as shop
 
 app = FastAPI(
     docs_url="/api/docs", openapi_url="/api/openapi.json", redoc_url="/api/redoc"
+)
+
+origins = [
+    "https://shop.asap-it.tech",
+    "http://localhost:8080",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.include_router(
