@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=your_username
+      - POSTGRES_PASSWORD=your_password
+      - POSTGRES_DB=your_database
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+
+  web:
+    build:
+      context: ./app
+    ports:
+      - 8000:8000
+    depends_on:
+      - postgres
