@@ -4,7 +4,7 @@ services:
   postgres:
     image: postgres:latest
     ports:
-      - 5432:5432
+      - "2248:5432"
     environment:
       - POSTGRES_USER=your_username
       - POSTGRES_PASSWORD=your_password
@@ -16,6 +16,6 @@ services:
     build:
       context: ./app
     ports:
-      - 8000:8000
+      - "2247:8000"
     depends_on:
       - postgres
