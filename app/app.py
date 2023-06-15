@@ -1,9 +1,9 @@
 from fastapi import Depends, FastAPI
 
-from app.db import User, create_db_and_tables
-from app.schemas import UserCreate, UserRead, UserUpdate
-from app.users import auth_backend, current_active_user, fastapi_users
-import app.shop as shop
+from db import User, create_db_and_tables
+from schemas import UserCreate, UserRead, UserUpdate
+from users import auth_backend, current_active_user, fastapi_users
+import shop as shop
 
 app = FastAPI(
     docs_url="/api/docs", openapi_url="/api/openapi.json", redoc_url="/api/redoc"

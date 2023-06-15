@@ -9,7 +9,7 @@ from sqlalchemy import Integer, Column, Boolean, String, ForeignKey, select, Flo
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase, relationship, selectinload, lazyload, subqueryload
 
-from app.config import DATABASE_URL
+from config import DATABASE_URL
 
 
 class Base(DeclarativeBase):
