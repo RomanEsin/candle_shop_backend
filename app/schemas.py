@@ -85,5 +85,5 @@ class OrderUpdate(schemas.BaseModel):
     status: Status
 
 
-class OrderFull(OrderCreate):
+class OrderFull(Order):
     create_date: datetime.datetime
