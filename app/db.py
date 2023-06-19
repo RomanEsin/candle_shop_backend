@@ -2,6 +2,7 @@ import asyncio
 import enum
 import secrets
 import uuid
+from datetime import datetime
 from functools import wraps
 from typing import AsyncGenerator
 
@@ -19,6 +20,7 @@ from sqlalchemy import (
     Uuid,
     Enum,
     update,
+    DateTime,
     func,
 )
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
@@ -121,6 +123,7 @@ class Order(Base):
     status = Column(Enum(Status), default=Status.CREATED)
     address = Column(String)
     comments = Column(String)
+    create_date = Column(DateTime, default=datetime.now())
 
 
 class TelegramLink(Base):

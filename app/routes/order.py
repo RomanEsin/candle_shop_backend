@@ -12,7 +12,7 @@ from app.bot import status_updated
 router = APIRouter(prefix="/api/orders", tags=["orders"])
 
 
-@router.post("", response_model=schemas.Order)
+@router.post("", response_model=schemas.OrderFull)
 async def create_order(
         order: schemas.OrderCreate,
         user: User = Depends(current_active_user),
@@ -23,12 +23,12 @@ async def create_order(
     return order
 
 
-@router.get("", response_model=list[schemas.Order])
+@router.get("", response_model=list[schemas.OrderFull])
 async def get_orders(user: User = Depends(current_active_user), db: DB = Depends(DB)):
     return await db.get_orders(user)
 
 
-@router.put("/{order_id}", response_model=schemas.Order)
+@router.put("/{order_id}", response_model=schemas.OrderFull)
 async def update_order(order_id: int, order: schemas.OrderUpdate, db: DB = Depends(DB)):
     update = await db.update_order_status(order_id, order.status)
     await status_updated(db, update, order.status)

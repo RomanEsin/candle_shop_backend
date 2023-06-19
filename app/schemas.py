@@ -1,3 +1,4 @@
+import datetime
 import uuid
 from typing import Optional
 
@@ -82,3 +83,7 @@ class OrderCreate(schemas.BaseModel):
 
 class OrderUpdate(schemas.BaseModel):
     status: Status
+
+
+class OrderFull(OrderCreate):
+    create_date: datetime.datetime
