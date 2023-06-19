@@ -1,10 +1,11 @@
 from fastapi import Depends, FastAPI
-from starlette.middleware.cors import CORSMiddleware
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
-from db import User, create_db_and_tables
-from schemas import UserCreate, UserRead, UserUpdate
-from users import auth_backend, current_active_user, fastapi_users
-import shop as shop
+from app.db import User, create_db_and_tables
+from app.schemas import UserCreate, UserRead, UserUpdate
+from app.users import auth_backend, current_active_user, fastapi_users
+from app.routes import order, products, basket, address_search, telegram_methods
 
 app = FastAPI(
     docs_url="/api/docs", openapi_url="/api/openapi.json", redoc_url="/api/redoc"
@@ -22,6 +23,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# add static directory
+app.mount("/api/static", StaticFiles(directory="app/static"), name="static")
 
 app.include_router(
     fastapi_users.get_auth_router(auth_backend), prefix="/api/auth/jwt", tags=["auth"]
@@ -47,7 +51,11 @@ app.include_router(
     tags=["users"],
 )
 
-app.include_router(shop.router)
+app.include_router(products.router)
+app.include_router(basket.router)
+app.include_router(address_search.router)
+app.include_router(order.router)
+app.include_router(telegram_methods.router)
 
 
 @app.get("/api/authenticated-route")

@@ -13,8 +13,7 @@ services:
       - ./pgdata:/var/lib/postgresql/data
 
   web:
-    build:
-      context: app
+    build: .
     ports:
       - "2247:8000"
     depends_on:

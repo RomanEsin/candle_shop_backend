@@ -47,6 +47,8 @@ async def test_add_product():
         "description": "An apple a day keeps the doctor away",
         "price": 1.99,
     }
+
+
 #
 #
 # def test_get_product():

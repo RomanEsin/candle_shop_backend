@@ -1,23 +1,34 @@
 import uuid
+from typing import Optional
 
 from fastapi_users import schemas
 
+from app.db import Status, ProductType
+
 
 class UserRead(schemas.BaseUser[uuid.UUID]):
-    pass
+    name: str
 
 
 class UserCreate(schemas.BaseUserCreate):
-    pass
+    name: str
 
 
 class UserUpdate(schemas.BaseUserUpdate):
-    pass
+    name: str
+
+
+class ProductFilters(schemas.BaseModel):
+    price_from: Optional[float]
+    price_to: Optional[float]
+    type: Optional[ProductType]
 
 
 class ProductBase(schemas.BaseModel):
     title: str
     price: float
+    image: str
+    type: ProductType
 
     class Config:
         orm_mode = True
@@ -47,9 +58,27 @@ class BasketItem(schemas.BaseModel):
 
 
 class Basket(schemas.BaseModel):
-    id: int
-    user_id: uuid.UUID
     basket_items: list[BasketItem]
 
     class Config:
         orm_mode = True
+
+
+class Order(schemas.BaseModel):
+    id: int
+    status: Status
+    basket: Basket
+    address: str
+    comment: Optional[str]
+
+    class Config:
+        orm_mode = True
+
+
+class OrderCreate(schemas.BaseModel):
+    address: str
+    comments: Optional[str]
+
+
+class OrderUpdate(schemas.BaseModel):
+    status: Status
