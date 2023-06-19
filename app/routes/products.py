@@ -64,8 +64,9 @@ async def create_product(
 
                 # Save image
                 image_path = f"app/static/{image.filename}"
+                image_path_short = f"static/{image.filename}"
                 image_data.save(image_path)
-                image_path = f"{BACKEND_BASE}/api/{image_path}"
+                image_path = f"{BACKEND_BASE}/api/{image_path_short}"
 
             except Exception as e:
                 raise HTTPException(status_code=400, detail=f"Invalid image file. {e}")
