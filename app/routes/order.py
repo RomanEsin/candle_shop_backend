@@ -38,3 +38,8 @@ async def update_order(order_id: int, order: schemas.OrderUpdate, db: DB = Depen
 @router.get("/all", response_model=list[schemas.OrderFull])
 async def get_all_orders(db: DB = Depends(DB)):
     return await db.get_all_orders()
+
+
+@router.get("/{order_id}", response_model=schemas.OrderFull)
+async def get_order(order_id: int, db: DB = Depends(DB)):
+    return await db.get_order_by_id(order_id)
