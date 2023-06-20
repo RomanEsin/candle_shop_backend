@@ -427,7 +427,7 @@ class DB:
         await self.session.flush()
         await self.session.refresh(blog)
 
-        return self.get_blog_by_id(blog.id)
+        return await self.get_blog_by_id(blog.id)
 
     async def delete_blog(self, blog_id):
         query = select(BlogPost).where(BlogPost.id == blog_id)
