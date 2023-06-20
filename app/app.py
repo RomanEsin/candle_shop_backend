@@ -5,7 +5,7 @@ from fastapi.staticfiles import StaticFiles
 from app.db import User, create_db_and_tables
 from app.schemas import UserCreate, UserRead, UserUpdate
 from app.users import auth_backend, current_active_user, fastapi_users
-from app.routes import order, products, basket, address_search, telegram_methods
+from app.routes import order, products, basket, address_search, telegram_methods, blog
 
 app = FastAPI(
     docs_url="/api/docs", openapi_url="/api/openapi.json", redoc_url="/api/redoc"
@@ -56,6 +56,7 @@ app.include_router(basket.router)
 app.include_router(address_search.router)
 app.include_router(order.router)
 app.include_router(telegram_methods.router)
+app.include_router(blog.router)
 
 
 @app.get("/api/authenticated-route")
