@@ -66,3 +66,9 @@ async def create_blog_post(
     )
 
     return await db.create_blog_post(blog)
+
+
+@router.delete("/{blog_id}")
+async def delete_blog(blog_id: int, db: DB = Depends(DB)):
+    await db.delete_blog(blog_id)
+    return {"success": True}
