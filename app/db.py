@@ -136,6 +136,16 @@ class TelegramLink(Base):
     chat_id = Column(Integer)
 
 
+class BlogPost(Base):
+    __tablename__ = "blog_post"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String)
+    content = Column(String)
+    image = Column(String)
+    create_date = Column(DateTime, default=datetime.now())
+
+
 engine = create_async_engine(DATABASE_URL)
 async_session_maker = async_sessionmaker(engine, expire_on_commit=False)
 
@@ -182,7 +192,14 @@ class DB:
     async def get_product(self, product_id):
         query = select(Product).filter(Product.id == product_id)
         result = await self.session.execute(query)
-        return result.scalar_one_or_none()
+        product = result.scalar_one_or_none()
+
+        if not product:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Product not found"
+            )
+
+        return product
 
     async def create_product(self, product):
         product = Product(**product.dict())
@@ -300,9 +317,25 @@ class DB:
     async def get_order_by_id(self, order_id):
         query = select(Order).filter(Order.id == order_id).options(selectinload("*"))
         result = await self.session.execute(query)
-        return result.scalar_one_or_none()
+        order = result.scalar_one_or_none()
+
+        if not order:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Order with id {order_id} not found",
+            )
+
+        return order
 
     async def update_order_status(self, order_id, order_status: Status):
+        order = await self.get_order_by_id(order_id)
+
+        if not order:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Order with id {order_id} not found",
+            )
+
         query = update(Order).where(Order.id == order_id).values(status=order_status)
         await self.session.execute(query)
         await self.session.commit()
@@ -350,3 +383,63 @@ class DB:
             await self.session.flush()
             await self.session.refresh(telegram_link)
         return telegram_link
+
+    async def get_telegram_link_by_link_hex(self, link_hex) -> TelegramLink:
+        query = select(TelegramLink).filter(TelegramLink.link_hex == link_hex)
+        result = await self.session.execute(query)
+        link = result.scalar_one_or_none()
+
+        if not link:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Telegram link not found",
+            )
+
+        return link
+
+    async def get_blog_posts(self):
+        query = select(BlogPost).order_by(BlogPost.create_date.desc())
+        result = await self.session.execute(query)
+        return result.scalars().all()
+
+    async def get_blog_by_id(self, blog_id):
+        query = select(BlogPost).filter(BlogPost.id == blog_id)
+        result = await self.session.execute(query)
+        blog = result.scalar_one_or_none()
+
+        if not blog:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Blog post not found",
+            )
+
+        return blog
+
+    async def create_blog_post(self, blog_create):
+        blog = BlogPost(
+            title=blog_create.title,
+            content=blog_create.content,
+            image=blog_create.image,
+            create_date=datetime.now(),
+        )
+        self.session.add(blog)
+        await self.session.commit()
+        await self.session.flush()
+        await self.session.refresh(blog)
+
+        return self.get_blog_by_id(blog.id)
+
+    async def delete_blog(self, blog_id):
+        query = select(BlogPost).where(BlogPost.id == blog_id)
+        result = await self.session.execute(query)
+        blog = result.scalars().first()
+
+        if not blog:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Blog post not found",
+            )
+
+        if blog:
+            await self.session.delete(blog)
+            await self.session.commit()

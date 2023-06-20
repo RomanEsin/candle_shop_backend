@@ -87,3 +87,23 @@ class OrderUpdate(schemas.BaseModel):
 
 class OrderFull(Order):
     create_date: datetime.datetime
+
+
+class BlogShort(schemas.BaseModel):
+    id: int
+    title: str
+    image: Optional[str]
+    create_date: datetime.datetime
+
+    class Config:
+        orm_mode = True
+
+
+class Blog(BlogShort):
+    content: str
+
+
+class BlogCreate(schemas.BaseModel):
+    title: str
+    image: Optional[str]
+    content: str
