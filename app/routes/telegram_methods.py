@@ -12,7 +12,9 @@ router = APIRouter(prefix="/api/telegram", tags=["telegram"])
 
 
 @router.get("/link")
-async def get_telegram_link(user: User = Depends(current_active_user), db: DB = Depends(DB)):
+async def get_telegram_link(
+    user: User = Depends(current_active_user), db: DB = Depends(DB)
+):
     telegram_link = await db.get_telegram_link(user)
     # create a deeplink for telegram bot with start=telegram_link.link_hex
 

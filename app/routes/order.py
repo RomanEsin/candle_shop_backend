@@ -14,9 +14,9 @@ router = APIRouter(prefix="/api/orders", tags=["orders"])
 
 @router.post("", response_model=schemas.OrderFull)
 async def create_order(
-        order: schemas.OrderCreate,
-        user: User = Depends(current_active_user),
-        db: DB = Depends(DB),
+    order: schemas.OrderCreate,
+    user: User = Depends(current_active_user),
+    db: DB = Depends(DB),
 ):
     order = await db.create_order(order, user)
     await status_updated(db, order, order.status)
@@ -33,3 +33,8 @@ async def update_order(order_id: int, order: schemas.OrderUpdate, db: DB = Depen
     update = await db.update_order_status(order_id, order.status)
     await status_updated(db, update, order.status)
     return update
+
+
+@router.get("/all", response_model=list[schemas.OrderFull])
+async def get_all_orders(db: DB = Depends(DB)):
+    return await db.get_all_orders()

@@ -310,6 +310,11 @@ class DB:
 
         return await self.get_order_by_id(order_id)
 
+    async def get_all_orders(self):
+        query = select(Order).options(selectinload("*"))
+        result = await self.session.execute(query)
+        return result.scalars().all()
+
     async def get_orders(self, user: User):
         query = (
             select(Order).filter(Order.user_id == user.id).options(selectinload("*"))
@@ -337,7 +342,9 @@ class DB:
         result = await self.session.execute(query)
         telegram_link = result.scalar_one_or_none()
         if not telegram_link:
-            telegram_link = TelegramLink(user_id=user.id, link_hex=secrets.token_hex(32))
+            telegram_link = TelegramLink(
+                user_id=user.id, link_hex=secrets.token_hex(32)
+            )
             self.session.add(telegram_link)
             await self.session.commit()
             await self.session.flush()
