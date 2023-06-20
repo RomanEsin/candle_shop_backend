@@ -9,7 +9,7 @@ from PIL import Image
 from secrets import token_hex
 from app.bot import status_updated
 
-router = APIRouter(prefix="/api/blog", tags=["orders"])
+router = APIRouter(prefix="/api/blog", tags=["blogs"])
 
 
 @router.get("", response_model=list[schemas.BlogShort])
